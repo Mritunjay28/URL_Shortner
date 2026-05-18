@@ -9,6 +9,7 @@ import com.Project.URL.Shortner.repository.UrlMappingrepo;
 import com.Project.URL.Shortner.util.ShortCodeGenerator;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.net.MalformedURLException;
@@ -19,6 +20,9 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class UrlMappingServiceImpl implements UrlMappingService{
+
+    @Value("${app.base-url}")
+    private String baseUrl;
 
     private final UrlMappingrepo urlMappingrepo;
 
@@ -51,7 +55,7 @@ public class UrlMappingServiceImpl implements UrlMappingService{
 
         ShortUrlResponse response = ShortUrlResponse.builder()
                 .originalUrl(originalUrl)
-                .shortUrl("http://localhost:8080/" + code)
+                .shortUrl(baseUrl+ "/" + code)
                 .shortCode(code)
                 .build();
 
