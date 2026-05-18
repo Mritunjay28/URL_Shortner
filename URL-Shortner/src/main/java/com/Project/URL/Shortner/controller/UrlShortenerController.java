@@ -2,6 +2,7 @@ package com.Project.URL.Shortner.controller;
 
 import com.Project.URL.Shortner.DTO.request.CreateShortUrlRequest;
 import com.Project.URL.Shortner.DTO.response.ShortUrlResponse;
+import com.Project.URL.Shortner.DTO.response.UrlStatsResponse;
 import com.Project.URL.Shortner.service.UrlMappingService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -27,5 +28,10 @@ public class UrlShortenerController {
         return ResponseEntity.status(HttpStatus.FOUND)
                 .header(HttpHeaders.LOCATION,originalUrl)
                 .build();
+    }
+
+    @GetMapping("/{code}/stats")
+    public UrlStatsResponse getStats(@PathVariable String code){
+        return  urlMappingService.getUrlStats(code);
     }
 }

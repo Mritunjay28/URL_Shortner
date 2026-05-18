@@ -2,6 +2,7 @@ package com.Project.URL.Shortner.service;
 
 import com.Project.URL.Shortner.DTO.request.CreateShortUrlRequest;
 import com.Project.URL.Shortner.DTO.response.ShortUrlResponse;
+import com.Project.URL.Shortner.DTO.response.UrlStatsResponse;
 import com.Project.URL.Shortner.entity.UrlMapping;
 import com.Project.URL.Shortner.exceptions.InvalidUrlException;
 import com.Project.URL.Shortner.exceptions.UrlNotFoundException;
@@ -74,5 +75,18 @@ public class UrlMappingServiceImpl implements UrlMappingService{
         urlMappingrepo.save(mapping);
 
         return mapping.getOriginalUrl();
+    }
+
+    @Override
+    public UrlStatsResponse getUrlStats(String shortCode) {
+        UrlMapping mapping = urlMappingrepo.findByShortCode(shortCode)
+                .orElseThrow(() -> new UrlNotFoundException("Short code not found"));
+
+        return UrlStatsResponse.builder()
+                .originalUrl(mapping.getOriginalUrl())
+                .shortCode(mapping.getShortCode())
+                .createdAt(mapping.getCreatedAt())
+                .clickCount(mapping.getClickCount())
+                .build();
     }
 }
