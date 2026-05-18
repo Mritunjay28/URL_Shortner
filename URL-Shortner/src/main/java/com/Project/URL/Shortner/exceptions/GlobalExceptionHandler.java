@@ -50,12 +50,26 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 
+//    @ExceptionHandler(Exception.class)
+//    public ResponseEntity<ErrorResponse> handleGenericException(
+//            Exception ex
+//    ) {
+//        ErrorResponse error = new ErrorResponse(
+//                "Something went wrong",
+//                HttpStatus.INTERNAL_SERVER_ERROR.value()
+//        );
+//
+//        return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
+//    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleGenericException(
             Exception ex
     ) {
+        ex.printStackTrace();   // IMPORTANT
+
         ErrorResponse error = new ErrorResponse(
-                "Something went wrong",
+                ex.getMessage(),
                 HttpStatus.INTERNAL_SERVER_ERROR.value()
         );
 
