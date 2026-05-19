@@ -5,6 +5,7 @@ import com.Project.URL.Shortner.DTO.response.ShortUrlResponse;
 import com.Project.URL.Shortner.DTO.response.UrlStatsResponse;
 import com.Project.URL.Shortner.entity.UrlMapping;
 import com.Project.URL.Shortner.exceptions.InvalidUrlException;
+import com.Project.URL.Shortner.exceptions.ShortCodeAlreadyExistsException;
 import com.Project.URL.Shortner.exceptions.UrlNotFoundException;
 import com.Project.URL.Shortner.repository.UrlMappingrepo;
 import com.Project.URL.Shortner.util.ShortCodeGenerator;
@@ -40,10 +41,40 @@ public class UrlMappingServiceImpl implements UrlMappingService{
        }
 
        // create shortcode such that not present in db already
+
+
         String code ;
-       do {
-           code = ShortCodeGenerator.generate();
-       }while(urlMappingrepo.existsByShortCode(code));
+
+       if(request.getCustomCode() != null &&
+               !request.getCustomCode().trim().isEmpty()) {
+
+           // trime the gode to remove extra like "  github  "
+           String customCode = request.getCustomCode().trim();
+
+           // check if of desire length and check if code contain only a-z , A-Z , 0-9 , _ , -
+           boolean isValid = customCode.matches("^[a-zA-Z0-9_-]{3,10}$");
+
+           if (!isValid) {
+               throw new InvalidUrlException(
+                       "Short code must be 3-10 characters and contain only letters, numbers, _ or -"
+               );
+           }
+
+           // check if ok to add or not
+           if (urlMappingrepo.existsByShortCode(customCode)) {
+               throw new ShortCodeAlreadyExistsException(
+                       customCode + " is already taken"
+               );
+           }
+
+           code = customCode;
+       }
+       else{
+           do {
+               code = ShortCodeGenerator.generate();
+           }while(urlMappingrepo.existsByShortCode(code));
+       }
+
 
        UrlMapping newEntity = UrlMapping.builder()
                .originalUrl(originalUrl)
