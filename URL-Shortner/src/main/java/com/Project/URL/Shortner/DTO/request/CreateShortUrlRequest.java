@@ -6,6 +6,8 @@ import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Setter
 public class CreateShortUrlRequest {
@@ -13,4 +15,6 @@ public class CreateShortUrlRequest {
     private String originalUrl;
 //    @Size(min = 3 ,max = 10)
     private String customCode;
+
+    private LocalDateTime expiryAt;
 }

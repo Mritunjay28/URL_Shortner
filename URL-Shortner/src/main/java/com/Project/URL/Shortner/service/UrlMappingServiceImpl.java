@@ -6,6 +6,7 @@ import com.Project.URL.Shortner.DTO.response.UrlStatsResponse;
 import com.Project.URL.Shortner.entity.UrlMapping;
 import com.Project.URL.Shortner.exceptions.InvalidUrlException;
 import com.Project.URL.Shortner.exceptions.ShortCodeAlreadyExistsException;
+import com.Project.URL.Shortner.exceptions.UrlExpiredException;
 import com.Project.URL.Shortner.exceptions.UrlNotFoundException;
 import com.Project.URL.Shortner.repository.UrlMappingrepo;
 import com.Project.URL.Shortner.util.ShortCodeGenerator;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Service;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
@@ -75,10 +77,17 @@ public class UrlMappingServiceImpl implements UrlMappingService{
            }while(urlMappingrepo.existsByShortCode(code));
        }
 
+       // check if not creating expired links
+        if (request.getExpiryAt() != null &&
+                request.getExpiryAt().isBefore(LocalDateTime.now())) {
+            throw new InvalidUrlException("Expiry time must be in the future");
+        }
+
 
        UrlMapping newEntity = UrlMapping.builder()
                .originalUrl(originalUrl)
                .shortCode(code)
+               .expiryAt(request.getExpiryAt())
                .build();
 
 
@@ -100,6 +109,7 @@ public class UrlMappingServiceImpl implements UrlMappingService{
         UrlMapping mapping = urlMappingrepo.findByShortCode(shortCode)
                 .orElseThrow(() -> new UrlNotFoundException("Short code not found"));
 
+        if(mapping.getExpiryAt() != null && mapping.getExpiryAt().isBefore(LocalDateTime.now())) throw new UrlExpiredException("The given ShortCode has Expired");
 
         mapping.setClickCount(mapping.getClickCount()+1);
 

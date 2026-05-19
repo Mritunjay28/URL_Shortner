@@ -45,6 +45,18 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(error, HttpStatus.CONFLICT);
     }
 
+    @ExceptionHandler(UrlExpiredException.class)
+    public ResponseEntity<ErrorResponse> handleUrlExpired(
+            UrlExpiredException  ex
+    ) {
+        ErrorResponse error = new ErrorResponse(
+                ex.getMessage(),
+                HttpStatus.GONE.value()
+        );
+
+        return new ResponseEntity<>(error, HttpStatus.GONE);
+    }
+
 
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

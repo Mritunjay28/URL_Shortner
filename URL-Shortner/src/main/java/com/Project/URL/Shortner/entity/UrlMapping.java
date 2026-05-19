@@ -28,6 +28,10 @@ public class UrlMapping {
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
+
+
+    private LocalDateTime expiryAt;
+
     @Builder.Default
     @Column(nullable = false)
     private Long clickCount = 0L;
