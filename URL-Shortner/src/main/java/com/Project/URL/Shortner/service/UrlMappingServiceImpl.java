@@ -38,7 +38,7 @@ public class UrlMappingServiceImpl implements UrlMappingService{
        // validate url
        try{
            URI.create(originalUrl).toURL();
-       } catch (MalformedURLException e) {
+       } catch (Exception e) {
            throw new InvalidUrlException("Invalid URL is Given");
        }
 
