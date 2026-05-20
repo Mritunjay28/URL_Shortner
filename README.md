@@ -1,73 +1,121 @@
-# URL Shortener API
+# URL Shortener
 
-A backend URL Shortener application built with Spring Boot that allows users to shorten long URLs and redirect using generated short codes.
-
-## Features
-
-- Shorten long URLs
-- Redirect short URLs to original URLs
-- Track click count for each shortened URL
-- Input validation for invalid/empty URLs
-- Global exception handling with clean API responses
-- Persistent storage using MySQL
-- RESTful API design
+A full-stack URL Shortener application built using **Spring Boot + MySQL + JavaScript frontend** that allows users to shorten long URLs, create custom aliases, set expiry dates, track click analytics, and redirect seamlessly.
 
 ---
 
-## Tech Stack
+## Features
 
+### Backend Features
+- Shorten long URLs
+- Redirect short URLs to original URLs
+- Custom short code support
+- Expiry-based URLs
+- Click count tracking
+- URL statistics endpoint
+- Input validation
+- Global exception handling
+- Swagger/OpenAPI documentation
+- RESTful API design
+- MySQL persistent storage
+- Unit testing (Service + Controller layer)
+
+### Frontend Features
+- Simple responsive UI using HTML, Tailwind CSS, and JavaScript
+- Create short URLs directly from browser
+- Optional custom short code support
+- Optional expiry date selection
+- Fetch URL statistics
+- Copy shortened URL to clipboard
+- Backend integration using Fetch API
+
+---
+
+# Tech Stack
+
+## Backend
 - Java 17+
 - Spring Boot
 - Spring Web
 - Spring Data JPA
+- Hibernate
 - MySQL
 - Lombok
 - Maven
-- Hibernate
+- Swagger / OpenAPI
+- JUnit 5
+- Mockito
+
+## Frontend
+- HTML
+- Tailwind CSS
+- JavaScript
+- Fetch API
 
 ---
 
-## Project Structure
+# Project Structure
 
 ```bash
-src/main/java/com/Project/URL/Shortner
+URL-Shortner/
 │
-├── controller
-│   └── UrlShortenerController.java
+├── Frontend/
+│   ├── index.html
+│   └── script.js
 │
-├── DTO
-│   ├── request
-│   │   └── CreateShortUrlRequest.java
-│   └── response
-│       ├── ShortUrlResponse.java
-│       └── ErrorResponse.java
+├── src/
+│   ├── main/java/com/Project/URL/Shortner
+│   │
+│   │   ├── config
+│   │   │   └── CorsConfig.java
+│   │   │
+│   │   ├── controller
+│   │   │   └── UrlShortenerController.java
+│   │   │
+│   │   ├── DTO
+│   │   │   ├── request
+│   │   │   │   └── CreateShortUrlRequest.java
+│   │   │   │
+│   │   │   └── response
+│   │   │       ├── ShortUrlResponse.java
+│   │   │       ├── UrlStatsResponse.java
+│   │   │       └── ErrorResponse.java
+│   │   │
+│   │   ├── entity
+│   │   │   └── UrlMapping.java
+│   │   │
+│   │   ├── exceptions
+│   │   │   ├── InvalidUrlException.java
+│   │   │   ├── UrlNotFoundException.java
+│   │   │   ├── UrlExpiredException.java
+│   │   │   ├── ShortCodeAlreadyExistsException.java
+│   │   │   └── GlobalExceptionHandler.java
+│   │   │
+│   │   ├── repository
+│   │   │   └── UrlMappingRepo.java
+│   │   │
+│   │   ├── service
+│   │   │   ├── UrlMappingService.java
+│   │   │   └── UrlMappingServiceImpl.java
+│   │   │
+│   │   └── util
+│   │       └── ShortCodeGenerator.java
+│   │
+│   └── test/
+│       ├── service
+│       └── controller
 │
-├── entity
-│   └── UrlMapping.java
-│
-├── exceptions
-│   ├── InvalidUrlException.java
-│   ├── UrlNotFoundException.java
-│   └── GlobalExceptionHandler.java
-│
-├── repository
-│   └── UrlMappingRepo.java
-│
-├── service
-│   ├── UrlMappingService.java
-│   └── UrlMappingServiceImpl.java
-│
-└── util
-    └── ShortCodeGenerator.java
+├── pom.xml
+└── README.md
 ```
 
 ---
 
-## API Endpoints
+# API Endpoints
 
-### 1. Create Short URL
+## 1. Create Short URL
 
-**POST**
+### POST
 ```http
 /api/urls
 ```
@@ -75,7 +123,9 @@ src/main/java/com/Project/URL/Shortner
 ### Request Body
 ```json
 {
-  "originalUrl": "https://google.com"
+  "originalUrl": "https://google.com",
+  "customCode": "google",
+  "expiryAt": "2026-06-01T12:00:00"
 }
 ```
 
@@ -83,35 +133,56 @@ src/main/java/com/Project/URL/Shortner
 ```json
 {
   "originalUrl": "https://google.com",
-  "shortUrl": "http://localhost:8080/Ab12Xq",
-  "shortCode": "Ab12Xq"
+  "shortUrl": "http://localhost:8080/google",
+  "shortCode": "google"
 }
 ```
 
 ---
 
-### 2. Redirect to Original URL
+## 2. Redirect to Original URL
 
-**GET**
+### GET
 ```http
 /{code}
 ```
 
 Example:
+
 ```http
-http://localhost:8080/Ab12Xq
+http://localhost:8080/google
 ```
 
 Behavior:
 - Finds original URL
+- Checks expiry
 - Increments click count
 - Redirects to original destination
 
 ---
 
-## Error Responses
+## 3. Get URL Statistics
 
-### Invalid URL
+### GET
+```http
+/{code}/stats
+```
+
+### Response
+```json
+{
+  "originalUrl": "https://google.com",
+  "shortCode": "google",
+  "createdAt": "2026-05-20T14:32:11",
+  "clickCount": 12
+}
+```
+
+---
+
+# Error Responses
+
+## Invalid URL
 ```json
 {
   "message": "Invalid URL is Given",
@@ -119,15 +190,23 @@ Behavior:
 }
 ```
 
-### Empty URL
+## Custom Code Already Exists
 ```json
 {
-  "message": "URL cannot be empty",
-  "status": 400
+  "message": "google is already taken",
+  "status": 409
 }
 ```
 
-### Short Code Not Found
+## Expired URL
+```json
+{
+  "message": "The given ShortCode has Expired",
+  "status": 410
+}
+```
+
+## Short Code Not Found
 ```json
 {
   "message": "Short code not found",
@@ -135,44 +214,55 @@ Behavior:
 }
 ```
 
-### Internal Server Error
-```json
-{
-  "message": "Something went wrong",
-  "status": 500
-}
-```
+---
+
+# Database Schema
+
+## url_mapping
+
+| Column | Type | Description |
+|--------|------|-------------|
+| id | BIGINT | Primary Key |
+| original_url | TEXT | Original long URL |
+| short_code | VARCHAR | Unique short code |
+| click_count | BIGINT | Number of clicks |
+| created_at | DATETIME | URL creation timestamp |
+| expiry_at | DATETIME | Expiry timestamp |
 
 ---
 
-## Database Schema
+# Swagger Documentation
 
-### url_mapping
-
-| Column       | Type      | Description |
-|-------------|-----------|-------------|
-| id          | BIGINT    | Primary Key |
-| original_url| TEXT      | Original long URL |
-| short_code  | VARCHAR   | Generated unique short code |
-| click_count | BIGINT    | Number of redirects |
-| created_at  | DATETIME  | URL creation timestamp |
-
----
-
-## Setup Instructions
-
-### 1. Clone Repository
+After running backend:
 
 ```bash
-git clone https://github.com/Mritunjay28/url-shortener.git
-cd url-shortener
+http://localhost:8080/swagger-ui/index.html
+```
+
+Interactive API docs because civilized debugging matters.
+
+---
+
+# Setup Instructions
+
+## 1. Clone Repository
+
+```bash
+git clone https://github.com/Mritunjay28/URL_Shortner.git
+cd URL_Shortner
 ```
 
 ---
 
-### 2. Configure Database
+## 2. Configure Database
 
-Update `application.properties`
+Update:
+
+```properties
+src/main/resources/application.properties
+```
+
+Example:
 
 ```properties
 spring.datasource.url=jdbc:mysql://localhost:3306/urlshortener
@@ -181,81 +271,105 @@ spring.datasource.password=your_password
 
 spring.jpa.hibernate.ddl-auto=update
 spring.jpa.show-sql=true
+
+app.base-url=http://localhost:8080
 ```
 
 ---
 
-### 3. Run Application
-
-Using Maven:
+## 3. Run Backend
 
 ```bash
 mvn spring-boot:run
 ```
 
-Or from IntelliJ:
-Run `UrlShortnerApplication`
+or run:
+
+```bash
+UrlShortnerApplication
+```
+
+from IntelliJ.
 
 ---
 
-## Testing
+## 4. Run Frontend
 
-Use Postman to test:
+Open:
 
-### Create Short URL
-```http
-POST http://localhost:8080/api/urls
+```bash
+Frontend/index.html
 ```
 
-Body:
-```json
-{
-  "originalUrl": "https://google.com"
-}
-```
+or run with Live Server.
 
----
+Frontend expects backend at:
 
-### Test Redirect
-Open returned short URL in browser:
-
-```http
-http://localhost:8080/Ab12Xq
+```bash
+http://localhost:8080
 ```
 
 ---
 
-## Future Improvements
+# Testing
 
-Planned enhancements:
+## Unit Tests
+Implemented using:
 
-- Swagger/OpenAPI documentation
-- URL analytics endpoint
-- Custom short code support
-- Expiry-based URLs
-- Docker support
-- Unit testing
-- Integration testing
+- JUnit 5
+- Mockito
+
+Test coverage includes:
+
+- URL creation
+- Invalid URL validation
+- Duplicate custom short code
+- Expired URL access
+- URL not found
+- Click count increment
+- URL statistics retrieval
+- Controller endpoint behavior
+
+Run tests:
+
+```bash
+mvn test
+```
+
+---
+
+# Future Improvements
+
+- Docker containerization
 - Redis caching
-- User authentication with JWT
+- User authentication (JWT)
+- Rate limiting
+- QR code generation for short URLs
+- Link deletion support
+- Admin dashboard
+- Cloud deployment (Render / Railway / Netlify)
 
 ---
 
-## Learning Outcomes
+# Learning Outcomes
 
 This project helped practice:
 
-- Layered backend architecture
-- REST API development
+- Layered architecture
+- REST API design
 - DTO pattern
 - Exception handling
 - Validation
 - JPA/Hibernate persistence
 - Redirect responses
-- Service-oriented design
+- Unit testing
+- Controller testing
+- Frontend-backend integration
+- CORS handling
+- Full-stack application design
 
 ---
 
-## Author - Mritunjay Senapati
+# Author : **Mritunjay Senapati**
 
-Built as a backend learning project using Spring Boot. 
+Built as a full-stack backend-focused learning project using Spring Boot.
