@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>URL Shortener</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-100 min-h-screen flex items-center justify-center p-6">
+
+<div class="max-w-2xl w-full bg-white shadow-xl rounded-2xl p-8 space-y-8">
+
+    <h1 class="text-3xl font-bold text-center text-slate-800">
+        URL Shortener
+    </h1>
+
+    <!-- CREATE SHORT URL -->
+    <div class="space-y-4">
+        <h2 class="text-xl font-semibold">Create Short URL</h2>
+
+        <input
+                id="originalUrl"
+                type="text"
+                placeholder="Enter long URL"
+                class="w-full border rounded-lg p-3"
+        >
+
+        <input
+                id="customCode"
+                type="text"
+                placeholder="Custom shortcode (optional)"
+                class="w-full border rounded-lg p-3"
+        >
+
+        <input
+                id="expiryAt"
+                type="datetime-local"
+                class="w-full border rounded-lg p-3"
+        >
+
+        <button
+                id="shortenBtn"
+                class="w-full bg-blue-600 text-white p-3 rounded-lg hover:bg-blue-700"
+        >
+            Shorten URL
+        </button>
+
+        <div id="resultBox" class="hidden bg-slate-100 p-4 rounded-lg">
+            <p class="font-medium">Short URL:</p>
+
+            <div class="flex gap-2 mt-2">
+                <input
+                        id="shortUrlOutput"
+                        readonly
+                        class="flex-1 border rounded-lg p-2"
+                >
+
+                <button
+                        id="copyBtn"
+                        class="bg-green-600 text-white px-4 rounded-lg"
+                >
+                    Copy
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- STATS -->
+    <div class="space-y-4">
+        <h2 class="text-xl font-semibold">Check Stats</h2>
+
+        <input
+                id="statsCode"
+                type="text"
+                placeholder="Enter shortcode"
+                class="w-full border rounded-lg p-3"
+        >
+
+        <button
+                id="statsBtn"
+                class="w-full bg-purple-600 text-white p-3 rounded-lg hover:bg-purple-700"
+        >
+            Get Stats
+        </button>
+
+        <div id="statsBox" class="hidden bg-slate-100 p-4 rounded-lg space-y-2">
+            <p><strong>Original URL:</strong> <span id="statsOriginal"></span></p>
+            <p><strong>Short Code:</strong> <span id="statsShortCode"></span></p>
+            <p><strong>Clicks:</strong> <span id="statsClicks"></span></p>
+            <p><strong>Created At:</strong> <span id="statsCreated"></span></p>
+        </div>
+    </div>
+
+    <!-- MESSAGE -->
+    <div
+            id="messageBox"
+            class="hidden p-3 rounded-lg text-center font-medium"
+    ></div>
+
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
