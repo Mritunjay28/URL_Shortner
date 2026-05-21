@@ -1,4 +1,4 @@
-const API_BASE = "https://srt.ly";
+const API_BASE = "https://url-shortner-api-production-c6f8.up.railway.app";
 
 const shortenBtn = document.getElementById("shortenBtn");
 const copyBtn = document.getElementById("copyBtn");
