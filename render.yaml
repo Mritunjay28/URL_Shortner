@@ -1,6 +1,6 @@
 services:
   - type: web
     name: url-shortner-api
-    env: java
+    runtime: java
     buildCommand: chmod +x mvnw && ./mvnw clean package -DskipTests
     startCommand: java -jar target/*.jar
