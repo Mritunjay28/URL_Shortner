@@ -17,7 +17,7 @@ public class CorsConfig {
                         .allowedOrigins("http://127.0.0.1:3000",
                                 "http://localhost:3000",
                                 "http://127.0.0.1:5500",
-                                "https://urlshortnerbymritunjay.netlify.app")
+                                "https://mrti.netlify.app")
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH")
                         .allowedHeaders("*");
             }

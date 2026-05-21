@@ -1,0 +1,2 @@
+/api/* https://url-shortner-api-production-c6f8.up.railway.app/api/:splat 200
+/* https://url-shortner-api-production-c6f8.up.railway.app/:splat 200

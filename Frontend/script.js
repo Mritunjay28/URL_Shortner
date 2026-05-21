@@ -1,4 +1,4 @@
-const API_BASE = "https://url-shortner-api-production-c6f8.up.railway.app";
+const API_BASE = "";
 
 const shortenBtn = document.getElementById("shortenBtn");
 const copyBtn = document.getElementById("copyBtn");
