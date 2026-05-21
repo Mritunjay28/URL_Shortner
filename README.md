@@ -1,109 +1,103 @@
-# URL Shortener
+# 🔗 URL Shortener
 
-A full-stack URL Shortener application built using **Spring Boot + MySQL + JavaScript frontend** that allows users to shorten long URLs, create custom aliases, set expiry dates, track click analytics, and redirect seamlessly.
+A full-stack URL shortening application built with **Spring Boot, MySQL, Railway, and Netlify** that allows users to shorten long URLs, generate custom aliases, track click analytics, and manage expiring links.
+
+## 🌐 Live Demo
+
+**Frontend:** https://mrti.netlify.app  
+**Swagger API Docs:** https://url-shortner-api-production-c6f8.up.railway.app/swagger-ui/index.html
 
 ---
 
-## Features
+## ✨ Features
 
-### Backend Features
-- Shorten long URLs
-- Redirect short URLs to original URLs
+- Shorten long URLs instantly
 - Custom short code support
-- Expiry-based URLs
-- Click count tracking
-- URL statistics endpoint
-- Input validation
-- Global exception handling
-- Swagger/OpenAPI documentation
+- URL redirection to original destination
+- Click count analytics
+- URL expiry support
 - RESTful API design
-- MySQL persistent storage
-- Unit testing (Service + Controller layer)
-
-### Frontend Features
-- Simple responsive UI using HTML, Tailwind CSS, and JavaScript
-- Create short URLs directly from browser
-- Optional custom short code support
-- Optional expiry date selection
-- Fetch URL statistics
-- Copy shortened URL to clipboard
-- Backend integration using Fetch API
+- Swagger/OpenAPI API documentation
+- Global exception handling
+- Input validation
+- Persistent MySQL storage
+- Frontend UI for shortening + stats lookup
+- Full cloud deployment (Railway + Netlify)
 
 ---
 
-# Tech Stack
+## 🏗 Architecture
 
-## Backend
-- Java 17+
+```text
+User
+  ↓
+Netlify Frontend (mrti.netlify.app)
+  ↓
+Netlify Redirect Proxy
+  ↓
+Spring Boot Backend (Railway)
+  ↓
+MySQL Database (Railway)
+```
+
+---
+
+## 🛠 Tech Stack
+
+### Backend
+- Java 21
 - Spring Boot
 - Spring Web
 - Spring Data JPA
 - Hibernate
 - MySQL
-- Lombok
 - Maven
+- Lombok
 - Swagger / OpenAPI
-- JUnit 5
-- Mockito
 
-## Frontend
+### Frontend
 - HTML
+- CSS
 - Tailwind CSS
 - JavaScript
-- Fetch API
+
+### Deployment
+- Railway (Backend + MySQL)
+- Netlify (Frontend)
+
+### Testing
+- JUnit 5
+- Mockito
+- MockMvc
 
 ---
 
-# Project Structure
+## 📁 Project Structure
 
-```bash
-URL-Shortner/
+```text
+URL_Shortner
 │
-├── Frontend/
+├── Frontend
 │   ├── index.html
-│   └── script.js
+│   ├── script.js
+│   └── _redirects
 │
-├── src/
-│   ├── main/java/com/Project/URL/Shortner
+├── src
+│   ├── main
+│   │   ├── java/com/Project/URL/Shortner
+│   │   │   ├── config
+│   │   │   ├── controller
+│   │   │   ├── DTO
+│   │   │   ├── entity
+│   │   │   ├── exceptions
+│   │   │   ├── repository
+│   │   │   ├── service
+│   │   │   └── util
+│   │   └── resources
 │   │
-│   │   ├── config
-│   │   │   └── CorsConfig.java
-│   │   │
-│   │   ├── controller
-│   │   │   └── UrlShortenerController.java
-│   │   │
-│   │   ├── DTO
-│   │   │   ├── request
-│   │   │   │   └── CreateShortUrlRequest.java
-│   │   │   │
-│   │   │   └── response
-│   │   │       ├── ShortUrlResponse.java
-│   │   │       ├── UrlStatsResponse.java
-│   │   │       └── ErrorResponse.java
-│   │   │
-│   │   ├── entity
-│   │   │   └── UrlMapping.java
-│   │   │
-│   │   ├── exceptions
-│   │   │   ├── InvalidUrlException.java
-│   │   │   ├── UrlNotFoundException.java
-│   │   │   ├── UrlExpiredException.java
-│   │   │   ├── ShortCodeAlreadyExistsException.java
-│   │   │   └── GlobalExceptionHandler.java
-│   │   │
-│   │   ├── repository
-│   │   │   └── UrlMappingRepo.java
-│   │   │
-│   │   ├── service
-│   │   │   ├── UrlMappingService.java
-│   │   │   └── UrlMappingServiceImpl.java
-│   │   │
-│   │   └── util
-│   │       └── ShortCodeGenerator.java
-│   │
-│   └── test/
-│       ├── service
-│       └── controller
+│   └── test
+│       ├── controller
+│       └── service
 │
 ├── pom.xml
 └── README.md
@@ -111,102 +105,91 @@ URL-Shortner/
 
 ---
 
-# API Endpoints
+## 🚀 API Endpoints
 
-## 1. Create Short URL
+### Create Short URL
 
-### POST
+**POST**
 ```http
 /api/urls
 ```
 
-### Request Body
+**Request**
 ```json
 {
   "originalUrl": "https://google.com",
-  "customCode": "google",
-  "expiryAt": "2026-06-01T12:00:00"
+  "customCode": "google"
 }
 ```
 
-### Response
+**Response**
 ```json
 {
   "originalUrl": "https://google.com",
-  "shortUrl": "http://localhost:8080/google",
+  "shortUrl": "https://mrti.netlify.app/google",
   "shortCode": "google"
 }
 ```
 
 ---
 
-## 2. Redirect to Original URL
+### Redirect to Original URL
 
-### GET
+**GET**
 ```http
-/{code}
+/{shortCode}
 ```
 
 Example:
-
-```http
-http://localhost:8080/google
+```text
+https://mrti.netlify.app/google
 ```
 
 Behavior:
 - Finds original URL
-- Checks expiry
 - Increments click count
 - Redirects to original destination
 
 ---
 
-## 3. Get URL Statistics
+### Get URL Statistics
 
-### GET
+**GET**
 ```http
-/{code}/stats
+/api/urls/{shortCode}/stats
 ```
 
-### Response
+**Response**
 ```json
 {
   "originalUrl": "https://google.com",
   "shortCode": "google",
-  "createdAt": "2026-05-20T14:32:11",
-  "clickCount": 12
+  "clickCount": 12,
+  "createdAt": "2026-05-21T15:20:11"
 }
 ```
 
 ---
 
-# Error Responses
+## ⚠ Error Handling
 
-## Invalid URL
+### Invalid URL
 ```json
 {
-  "message": "Invalid URL is Given",
+  "message": "Invalid URL is given",
   "status": 400
 }
 ```
 
-## Custom Code Already Exists
+### Short Code Already Exists
 ```json
 {
-  "message": "google is already taken",
+  "message": "Short code already exists",
   "status": 409
 }
 ```
 
-## Expired URL
-```json
-{
-  "message": "The given ShortCode has Expired",
-  "status": 410
-}
-```
-
-## Short Code Not Found
+### URL Not Found
 ```json
 {
   "message": "Short code not found",
@@ -214,38 +197,39 @@ Behavior:
 }
 ```
 
----
-
-# Database Schema
-
-## url_mapping
-
-| Column | Type | Description |
-|--------|------|-------------|
-| id | BIGINT | Primary Key |
-| original_url | TEXT | Original long URL |
-| short_code | VARCHAR | Unique short code |
-| click_count | BIGINT | Number of clicks |
-| created_at | DATETIME | URL creation timestamp |
-| expiry_at | DATETIME | Expiry timestamp |
-
----
-
-# Swagger Documentation
-
-After running backend:
-
-```bash
-http://localhost:8080/swagger-ui/index.html
+### URL Expired
+```json
+{
+  "message": "URL has expired",
+  "status": 410
+}
 ```
 
-Interactive API docs because civilized debugging matters.
+---
+
+## 🧪 Testing
+
+Implemented tests for:
+
+- Service layer business logic
+- Controller endpoints
+- Exception handling
+- URL expiry logic
+- Click count increment validation
+- Stats retrieval
+- Duplicate custom code validation
+
+Run tests:
+
+```bash
+./mvnw test
+```
 
 ---
 
-# Setup Instructions
+## ⚙ Local Setup
 
-## 1. Clone Repository
+### Clone Repository
 
 ```bash
 git clone https://github.com/Mritunjay28/URL_Shortner.git
@@ -254,7 +238,7 @@ cd URL_Shortner
 
 ---
 
-## 2. Configure Database
+### Configure Database
 
 Update:
 
@@ -266,110 +250,81 @@ Example:
 
 ```properties
 spring.datasource.url=jdbc:mysql://localhost:3306/urlshortener
-spring.datasource.username=your_username
+spring.datasource.username=root
 spring.datasource.password=your_password
 
 spring.jpa.hibernate.ddl-auto=update
-spring.jpa.show-sql=true
-
-app.base-url=http://localhost:8080
 ```
 
 ---
 
-## 3. Run Backend
+### Run Backend
 
 ```bash
-mvn spring-boot:run
+./mvnw spring-boot:run
 ```
-
-or run:
-
-```bash
-UrlShortnerApplication
-```
-
-from IntelliJ.
 
 ---
 
-## 4. Run Frontend
+### Run Frontend
 
 Open:
 
-```bash
+```text
 Frontend/index.html
 ```
 
-or run with Live Server.
-
-Frontend expects backend at:
-
-```bash
-http://localhost:8080
-```
+using Live Server.
 
 ---
 
-# Testing
+## ☁ Deployment
 
-## Unit Tests
-Implemented using:
+### Backend
+Deployed on Railway:
+- Spring Boot API
+- Railway MySQL database
 
-- JUnit 5
-- Mockito
-
-Test coverage includes:
-
-- URL creation
-- Invalid URL validation
-- Duplicate custom short code
-- Expired URL access
-- URL not found
-- Click count increment
-- URL statistics retrieval
-- Controller endpoint behavior
-
-Run tests:
-
-```bash
-mvn test
-```
+### Frontend
+Deployed on Netlify:
+- Static frontend hosting
+- Redirect proxy routing to backend
 
 ---
 
-# Future Improvements
+## 📌 Future Improvements
 
-- Docker containerization
+- QR code generation
 - Redis caching
-- User authentication (JWT)
 - Rate limiting
-- QR code generation for short URLs
-- Link deletion support
-- Admin dashboard
-- Cloud deployment (Render / Railway / Netlify)
+- Docker containerization
+- GitHub Actions CI/CD
+- User authentication
+- Dashboard analytics charts
+- Custom branded domain support
 
 ---
 
-# Learning Outcomes
+## 💡 Learning Outcomes
 
-This project helped practice:
+This project helped strengthen:
 
-- Layered architecture
-- REST API design
+- REST API development
+- Layered backend architecture
 - DTO pattern
 - Exception handling
-- Validation
+- Spring Boot testing
 - JPA/Hibernate persistence
-- Redirect responses
-- Unit testing
-- Controller testing
+- Cloud deployment
+- Reverse proxy routing
+- CORS configuration
+- Production debugging
 - Frontend-backend integration
-- CORS handling
-- Full-stack application design
 
 ---
 
-# Author : **Mritunjay Senapati**
+## 👨‍💻 Author
 
-Built as a full-stack backend-focused learning project using Spring Boot.
+**Mritunjay Senapati**
+
+Built as a full-stack backend-focused engineering project.
