@@ -1,6 +1,6 @@
 # 🔗 URL Shortener
 
-A full-stack URL shortening application built with **Spring Boot, MySQL, Railway, and Netlify** that allows users to shorten long URLs, generate custom aliases, track click analytics, and manage expiring links.
+A full-stack URL shortening application built with **Spring Boot, PostgreSQL, Docker, Render, and Netlify** that allows users to shorten long URLs, generate custom aliases, track click analytics, and manage expiring links.
 
 ## 🌐 Live Demo
 
@@ -20,9 +20,9 @@ A full-stack URL shortening application built with **Spring Boot, MySQL, Railway
 - Swagger/OpenAPI API documentation
 - Global exception handling
 - Input validation
-- Persistent MySQL storage
+- Persistent PostgreSQL storage
 - Frontend UI for shortening + stats lookup
-- Full cloud deployment (Railway + Netlify)
+- Full cloud deployment (Render + Netlify)
 
 ---
 
@@ -35,9 +35,9 @@ Netlify Frontend (mrti.netlify.app)
   ↓
 Netlify Redirect Proxy
   ↓
-Spring Boot Backend (Railway)
+Spring Boot Backend (Render Docker Container)
   ↓
-MySQL Database (Railway)
+Render PostgreSQL Database
 ```
 
 ---
@@ -250,10 +250,9 @@ src/main/resources/application.properties
 Example:
 
 ```properties
-spring.datasource.url=jdbc:mysql://localhost:3306/urlshortener
-spring.datasource.username=root
+spring.datasource.url=jdbc:postgresql://localhost:5432/urlshortener
+spring.datasource.username=postgres
 spring.datasource.password=your_password
-
 spring.jpa.hibernate.ddl-auto=update
 ```
 
@@ -282,14 +281,17 @@ using Live Server.
 ## ☁ Deployment
 
 ### Backend
-Deployed on Railway:
-- Spring Boot API
-- Railway MySQL database
+Deployed on Render using Docker:
+- Spring Boot REST API
+- PostgreSQL database
+- Environment variable configuration
+- Production containerized deployment
 
 ### Frontend
 Deployed on Netlify:
 - Static frontend hosting
-- Redirect proxy routing to backend
+- Reverse proxy routing to backend
+- Custom short URL domain handling
 
 ---
 
@@ -312,7 +314,6 @@ Deployed on Netlify:
 - QR code generation
 - Redis caching
 - Rate limiting
-- Docker containerization
 - GitHub Actions CI/CD
 - User authentication
 - Dashboard analytics charts
@@ -335,6 +336,10 @@ This project helped strengthen:
 - CORS configuration
 - Production debugging
 - Frontend-backend integration
+- Docker containerization
+- PostgreSQL migration
+- Environment variable configuration
+- Cloud infrastructure migration
 
 ---
 
