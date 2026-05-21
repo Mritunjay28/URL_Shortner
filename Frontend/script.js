@@ -1,4 +1,4 @@
-const BASE_URL = "http://localhost:8080";
+const API_BASE = "https://url-shortner-api-production-4084.up.railway.app";
 
 const shortenBtn = document.getElementById("shortenBtn");
 const copyBtn = document.getElementById("copyBtn");
@@ -45,7 +45,7 @@ shortenBtn.addEventListener("click", async () => {
     }
 
     try {
-        const response = await fetch(`${BASE_URL}/api/urls`, {
+        const response = await fetch(`${API_BASE}/api/urls`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -83,7 +83,7 @@ statsBtn.addEventListener("click", async () => {
     const code = document.getElementById("statsCode").value.trim();
 
     try {
-        const statsResponse = await fetch(`${BASE_URL}/${code}/stats`);
+        const statsResponse = await fetch(`${API_BASE}/${code}/stats`);
 
         const data = await statsResponse.json();
 
