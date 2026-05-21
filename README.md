@@ -5,7 +5,7 @@ A full-stack URL shortening application built with **Spring Boot, MySQL, Railway
 ## 🌐 Live Demo
 
 **Frontend:** https://mrti.netlify.app  
-**Swagger API Docs:** https://url-shortner-api-production-c6f8.up.railway.app/swagger-ui/index.html
+**Swagger API Docs:** https://url-shortner-pwp7.onrender.com/swagger-ui/index.html
 
 ---
 
@@ -50,7 +50,7 @@ MySQL Database (Railway)
 - Spring Web
 - Spring Data JPA
 - Hibernate
-- MySQL
+- PostgreSQL
 - Maven
 - Lombok
 - Swagger / OpenAPI
@@ -62,7 +62,8 @@ MySQL Database (Railway)
 - JavaScript
 
 ### Deployment
-- Railway (Backend + MySQL)
+- Docker 
+- Render (Backend + PostgreSQL)
 - Netlify (Frontend)
 
 ### Testing
