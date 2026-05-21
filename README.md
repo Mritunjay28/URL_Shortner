@@ -292,6 +292,20 @@ Deployed on Netlify:
 
 ---
 
+## 📸 Screenshots
+
+### Homepage
+![Homepage](assets/homepage.png)
+
+### URL Shortening
+![Shortened URL](assets/shortened-url.png)
+
+### Swagger API Documentation
+![Swagger Docs](assets/swagger.png)
+
+### URL Analytics
+![Stats](assets/stats.png)
+
 ## 📌 Future Improvements
 
 - QR code generation
