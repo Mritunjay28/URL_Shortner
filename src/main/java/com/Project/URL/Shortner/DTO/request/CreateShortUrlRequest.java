@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 @Getter
 @Setter
@@ -16,5 +17,5 @@ public class CreateShortUrlRequest {
 //    @Size(min = 3 ,max = 10)
     private String customCode;
 
-    private LocalDateTime expiryAt;
+    private OffsetDateTime expiryAt;
 }

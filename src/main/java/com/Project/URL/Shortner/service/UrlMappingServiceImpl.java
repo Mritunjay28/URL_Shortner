@@ -19,6 +19,7 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.Optional;
 
 @Service
@@ -79,7 +80,7 @@ public class UrlMappingServiceImpl implements UrlMappingService{
 
        // check if not creating expired links
         if (request.getExpiryAt() != null &&
-                request.getExpiryAt().isBefore(LocalDateTime.now())) {
+                request.getExpiryAt().isBefore(OffsetDateTime.now())) {
             throw new InvalidUrlException("Expiry time must be in the future");
         }
 
@@ -109,7 +110,7 @@ public class UrlMappingServiceImpl implements UrlMappingService{
         UrlMapping mapping = urlMappingrepo.findByShortCode(shortCode)
                 .orElseThrow(() -> new UrlNotFoundException("Short code not found"));
 
-        if(mapping.getExpiryAt() != null && mapping.getExpiryAt().isBefore(LocalDateTime.now())) throw new UrlExpiredException("The given ShortCode has Expired");
+        if(mapping.getExpiryAt() != null && mapping.getExpiryAt().isBefore(OffsetDateTime.now())) throw new UrlExpiredException("The given ShortCode has Expired");
 
         mapping.setClickCount(mapping.getClickCount()+1);
 

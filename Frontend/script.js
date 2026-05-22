@@ -40,9 +40,9 @@ shortenBtn.addEventListener("click", async () => {
         requestBody.customCode = customCode;
     }
 
-    if (expiryAt) {
-        requestBody.expiryAt = expiryAt;
-    }
+   if (expiryAt) {
+       requestBody.expiryAt = new Date(expiryAt).toISOString();
+   }
 
     try {
         const response = await fetch(`${API_BASE}/api/urls`, {

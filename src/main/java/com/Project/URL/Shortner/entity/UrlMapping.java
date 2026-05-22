@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 
 @Entity
@@ -30,7 +31,7 @@ public class UrlMapping {
 
 
 
-    private LocalDateTime expiryAt;
+    private OffsetDateTime expiryAt;
 
     @Builder.Default
     @Column(nullable = false)
