@@ -4,98 +4,429 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>URL Shortener</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --bg: #0a0a0f;
+            --surface: #111118;
+            --surface2: #18181f;
+            --border: rgba(255,255,255,0.07);
+            --border-focus: rgba(99,102,241,0.6);
+            --accent: #6366f1;
+            --accent2: #a78bfa;
+            --accent-green: #34d399;
+            --accent-green2: #059669;
+            --text: #f0f0f5;
+            --text-muted: #6b6b80;
+            --text-dim: #3a3a4a;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'DM Mono', monospace;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem 1rem;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Ambient glow background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: -30vh;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 70vw;
+            height: 60vh;
+            background: radial-gradient(ellipse, rgba(99,102,241,0.12) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: 0;
+        }
+        body::after {
+            content: '';
+            position: fixed;
+            bottom: -20vh;
+            right: -10vw;
+            width: 50vw;
+            height: 50vh;
+            background: radial-gradient(ellipse, rgba(167,139,250,0.07) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .wrapper {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 560px;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            animation: fadeUp 0.6s cubic-bezier(0.16,1,0.3,1) both;
+        }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(24px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            padding: 0.5rem 0 0.5rem;
+        }
+        .header-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            background: rgba(99,102,241,0.1);
+            border: 1px solid rgba(99,102,241,0.25);
+            color: var(--accent2);
+            font-size: 0.7rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            padding: 0.3rem 0.9rem;
+            border-radius: 99px;
+            margin-bottom: 1rem;
+        }
+        .header-badge span { font-size: 0.85em; }
+        h1 {
+            font-family: 'Syne', sans-serif;
+            font-size: clamp(2rem, 6vw, 2.8rem);
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            line-height: 1;
+            background: linear-gradient(135deg, #fff 30%, var(--accent2) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .header-sub {
+            margin-top: 0.5rem;
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            letter-spacing: 0.04em;
+        }
+
+        /* Card */
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 1.25rem;
+            padding: 1.75rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            backdrop-filter: blur(8px);
+            transition: border-color 0.3s;
+        }
+        .card:hover { border-color: rgba(99,102,241,0.2); }
+
+        .card-title {
+            font-family: 'Syne', sans-serif;
+            font-size: 0.8rem;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .card-title::before {
+            content: '';
+            display: inline-block;
+            width: 6px; height: 6px;
+            border-radius: 50%;
+            background: var(--accent);
+            box-shadow: 0 0 8px var(--accent);
+        }
+        .card:nth-of-type(2) .card-title::before {
+            background: #a78bfa;
+            box-shadow: 0 0 8px #a78bfa;
+        }
+
+        /* Inputs */
+        input[type="text"],
+        input[type="datetime-local"],
+        input[readonly] {
+            width: 100%;
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-radius: 0.65rem;
+            padding: 0.8rem 1rem;
+            color: var(--text);
+            font-family: 'DM Mono', monospace;
+            font-size: 0.82rem;
+            outline: none;
+            transition: border-color 0.25s, box-shadow 0.25s;
+            -webkit-appearance: none;
+        }
+        input[type="text"]::placeholder,
+        input[type="datetime-local"]::placeholder {
+            color: var(--text-dim);
+        }
+        input:focus {
+            border-color: var(--border-focus);
+            box-shadow: 0 0 0 3px rgba(99,102,241,0.12);
+        }
+        input[type="datetime-local"]::-webkit-calendar-picker-indicator {
+            filter: invert(0.5);
+            cursor: pointer;
+        }
+
+        /* Buttons */
+        .btn-primary {
+            width: 100%;
+            background: var(--accent);
+            color: #fff;
+            border: none;
+            border-radius: 0.65rem;
+            padding: 0.85rem 1rem;
+            font-family: 'Syne', sans-serif;
+            font-size: 0.88rem;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.15s, box-shadow 0.2s;
+        }
+        .btn-primary::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(255,255,255,0.12), transparent);
+        }
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 24px rgba(99,102,241,0.45);
+        }
+        .btn-primary:active { transform: translateY(0); }
+
+        .btn-secondary {
+            width: 100%;
+            background: rgba(167,139,250,0.1);
+            color: var(--accent2);
+            border: 1px solid rgba(167,139,250,0.25);
+            border-radius: 0.65rem;
+            padding: 0.85rem 1rem;
+            font-family: 'Syne', sans-serif;
+            font-size: 0.88rem;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+            cursor: pointer;
+            transition: background 0.2s, border-color 0.2s, transform 0.15s;
+        }
+        .btn-secondary:hover {
+            background: rgba(167,139,250,0.18);
+            border-color: rgba(167,139,250,0.5);
+            transform: translateY(-1px);
+        }
+
+        .btn-copy {
+            background: rgba(52,211,153,0.12);
+            color: var(--accent-green);
+            border: 1px solid rgba(52,211,153,0.25);
+            border-radius: 0.55rem;
+            padding: 0.6rem 1.1rem;
+            font-family: 'Syne', sans-serif;
+            font-size: 0.78rem;
+            font-weight: 700;
+            letter-spacing: 0.06em;
+            cursor: pointer;
+            white-space: nowrap;
+            flex-shrink: 0;
+            transition: background 0.2s, border-color 0.2s;
+        }
+        .btn-copy:hover {
+            background: rgba(52,211,153,0.2);
+            border-color: rgba(52,211,153,0.5);
+        }
+
+        /* Result box */
+        #resultBox {
+            background: var(--surface2);
+            border: 1px solid rgba(52,211,153,0.2);
+            border-radius: 0.75rem;
+            padding: 1rem;
+        }
+        #resultBox.hidden { display: none; }
+        .result-label {
+            font-size: 0.68rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--accent-green);
+            margin-bottom: 0.6rem;
+        }
+        .result-row {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+        #shortUrlOutput {
+            background: transparent;
+            border-color: rgba(255,255,255,0.08);
+            color: var(--accent2);
+            font-size: 0.8rem;
+        }
+
+        /* Stats box */
+        #statsBox {
+            background: var(--surface2);
+            border: 1px solid rgba(167,139,250,0.2);
+            border-radius: 0.75rem;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.6rem;
+        }
+        #statsBox.hidden { display: none; }
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            gap: 1rem;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid var(--border);
+        }
+        .stat-row:last-child { border-bottom: none; }
+        .stat-key {
+            font-size: 0.68rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            flex-shrink: 0;
+        }
+        .stat-val {
+            font-size: 0.8rem;
+            color: var(--text);
+            text-align: right;
+            word-break: break-all;
+        }
+        #statsClicks {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: var(--accent2);
+        }
+
+        /* Message box */
+        #messageBox {
+            font-size: 0.78rem;
+            letter-spacing: 0.03em;
+            border-radius: 0.65rem;
+            padding: 0.75rem 1rem;
+            text-align: center;
+        }
+        #messageBox.hidden { display: none; }
+        .bg-green-100 { background: rgba(52,211,153,0.08) !important; }
+        .text-green-700 { color: var(--accent-green) !important; border: 1px solid rgba(52,211,153,0.2); }
+        .bg-red-100 { background: rgba(239,68,68,0.08) !important; }
+        .text-red-700 { color: #f87171 !important; border: 1px solid rgba(239,68,68,0.2); }
+
+        /* Divider */
+        .divider {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--border), transparent);
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            font-size: 0.68rem;
+            color: var(--text-dim);
+            letter-spacing: 0.05em;
+            padding-bottom: 0.5rem;
+        }
+    </style>
 </head>
-<body class="bg-slate-100 min-h-screen flex items-center justify-center p-6">
+<body>
 
-<div class="max-w-2xl w-full bg-white shadow-xl rounded-2xl p-8 space-y-8">
+<div class="wrapper">
 
-    <h1 class="text-3xl font-bold text-center text-slate-800">
-        URL Shortener
-    </h1>
+    <div class="header">
+        <div class="header-badge"><span>⚡</span> fast &amp; free</div>
+        <h1>URL Shortener</h1>
+        <p class="header-sub">Turn long links into clean, trackable URLs</p>
+    </div>
 
     <!-- CREATE SHORT URL -->
-    <div class="space-y-4">
-        <h2 class="text-xl font-semibold">Create Short URL</h2>
+    <div class="card">
+        <p class="card-title">Create Short URL</p>
 
         <input
-                id="originalUrl"
-                type="text"
-                placeholder="Enter long URL"
-                class="w-full border rounded-lg p-3"
-        >
-
-        <input
-                id="customCode"
-                type="text"
-                placeholder="Custom shortcode (optional)"
-                class="w-full border rounded-lg p-3"
+            id="originalUrl"
+            type="text"
+            placeholder="https://your-very-long-url.com/goes/here"
         >
 
         <input
-                id="expiryAt"
-                type="datetime-local"
-                class="w-full border rounded-lg p-3"
+            id="customCode"
+            type="text"
+            placeholder="Custom shortcode  (optional)"
         >
 
-        <button
-                id="shortenBtn"
-                class="w-full bg-blue-600 text-white p-3 rounded-lg hover:bg-blue-700"
+        <input
+            id="expiryAt"
+            type="datetime-local"
         >
-            Shorten URL
-        </button>
 
-        <div id="resultBox" class="hidden bg-slate-100 p-4 rounded-lg">
-            <p class="font-medium">Short URL:</p>
+        <button id="shortenBtn" class="btn-primary">Shorten URL →</button>
 
-            <div class="flex gap-2 mt-2">
-                <input
-                        id="shortUrlOutput"
-                        readonly
-                        class="flex-1 border rounded-lg p-2"
-                >
-
-                <button
-                        id="copyBtn"
-                        class="bg-green-600 text-white px-4 rounded-lg"
-                >
-                    Copy
-                </button>
+        <div id="resultBox" class="hidden">
+            <p class="result-label">✓ Short URL ready</p>
+            <div class="result-row">
+                <input id="shortUrlOutput" type="text" readonly>
+                <button id="copyBtn" class="btn-copy">Copy</button>
             </div>
         </div>
     </div>
 
+    <div class="divider"></div>
+
     <!-- STATS -->
-    <div class="space-y-4">
-        <h2 class="text-xl font-semibold">Check Stats</h2>
+    <div class="card">
+        <p class="card-title">Check Stats</p>
 
         <input
-                id="statsCode"
-                type="text"
-                placeholder="Enter shortcode"
-                class="w-full border rounded-lg p-3"
+            id="statsCode"
+            type="text"
+            placeholder="Enter shortcode"
         >
 
-        <button
-                id="statsBtn"
-                class="w-full bg-purple-600 text-white p-3 rounded-lg hover:bg-purple-700"
-        >
-            Get Stats
-        </button>
+        <button id="statsBtn" class="btn-secondary">Get Stats →</button>
 
-        <div id="statsBox" class="hidden bg-slate-100 p-4 rounded-lg space-y-2">
-            <p><strong>Original URL:</strong> <span id="statsOriginal"></span></p>
-            <p><strong>Short Code:</strong> <span id="statsShortCode"></span></p>
-            <p><strong>Clicks:</strong> <span id="statsClicks"></span></p>
-            <p><strong>Created At:</strong> <span id="statsCreated"></span></p>
+        <div id="statsBox" class="hidden">
+            <div class="stat-row">
+                <span class="stat-key">Original URL</span>
+                <span class="stat-val" id="statsOriginal"></span>
+            </div>
+            <div class="stat-row">
+                <span class="stat-key">Short Code</span>
+                <span class="stat-val" id="statsShortCode"></span>
+            </div>
+            <div class="stat-row">
+                <span class="stat-key">Clicks</span>
+                <span class="stat-val" id="statsClicks"></span>
+            </div>
+            <div class="stat-row">
+                <span class="stat-key">Created At</span>
+                <span class="stat-val" id="statsCreated"></span>
+            </div>
         </div>
     </div>
 
-    <!-- MESSAGE -->
-    <div
-            id="messageBox"
-            class="hidden p-3 rounded-lg text-center font-medium"
-    ></div>
+    <div id="messageBox" class="hidden"></div>
+
+    <p class="footer">No tracking. No nonsense. Just shorter links.</p>
 
 </div>
 
