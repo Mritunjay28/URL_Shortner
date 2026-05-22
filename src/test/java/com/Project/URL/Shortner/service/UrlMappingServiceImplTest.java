@@ -18,6 +18,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -87,7 +88,7 @@ public class UrlMappingServiceImplTest {
                 .originalUrl("https://google.com")
                 .shortCode("google")
                 .clickCount(5L)
-                .expiryAt(LocalDateTime.now().minusDays(1))
+                .expiryAt(OffsetDateTime.now().minusDays(1))
                 .build();
 
         when(urlMappingrepo.findByShortCode("google")).thenReturn(Optional.of(mapping));
@@ -103,7 +104,7 @@ public class UrlMappingServiceImplTest {
                 .originalUrl("https://google.com")
                 .shortCode("google")
                 .clickCount(5L)
-                .expiryAt(LocalDateTime.now().plusDays(5))
+                .expiryAt(OffsetDateTime.now().plusDays(5))
                 .build();
 
         when(urlMappingrepo.findByShortCode("google")).thenReturn(Optional.of(mapping));
