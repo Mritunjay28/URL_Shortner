@@ -19,7 +19,8 @@ public class CorsConfig {
                                 "http://127.0.0.1:5500",
                                 "https://mrti.netlify.app")
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH")
-                        .allowedHeaders("*");
+                        .allowedHeaders("*")
+                        .exposedHeaders("X-Rate-Limit-Remaining", "X-Rate-Limit-Retry-After-Seconds");
             }
         };
     }

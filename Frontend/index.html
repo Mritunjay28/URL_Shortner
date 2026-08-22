@@ -327,6 +327,31 @@
             color: var(--accent2);
         }
 
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+            box-shadow: none !important;
+            background: #3a3a4a;
+        }
+
+        .rate-limit-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            font-size: 0.68rem;
+            color: var(--text-muted);
+            padding: 0.25rem 0.55rem;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border);
+            border-radius: 0.5rem;
+            letter-spacing: 0.04em;
+        }
+        .rate-limit-pill span.count {
+            color: var(--accent-green);
+            font-weight: 600;
+        }
+
         /* Message box */
         #messageBox {
             font-size: 0.78rem;
@@ -340,6 +365,8 @@
         .text-green-700 { color: var(--accent-green) !important; border: 1px solid rgba(52,211,153,0.2); }
         .bg-red-100 { background: rgba(239,68,68,0.08) !important; }
         .text-red-700 { color: #f87171 !important; border: 1px solid rgba(239,68,68,0.2); }
+        .bg-amber-100 { background: rgba(245,158,11,0.1) !important; }
+        .text-amber-700 { color: #fbbf24 !important; border: 1px solid rgba(245,158,11,0.3); }
 
         /* Divider */
         .divider {
@@ -369,7 +396,12 @@
 
     <!-- CREATE SHORT URL -->
     <div class="card">
-        <p class="card-title">Create Short URL</p>
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <p class="card-title">Create Short URL</p>
+            <div id="rateLimitBadge" class="rate-limit-pill">
+                <span>🛡️ Limit: <span id="remainingRequests" class="count">10</span>/10</span>
+            </div>
+        </div>
 
         <input
             id="originalUrl"
