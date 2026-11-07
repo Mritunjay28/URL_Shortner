@@ -7,6 +7,10 @@ A full-stack URL shortening application built with **Spring Boot, PostgreSQL, Do
 **Frontend:** https://mrti.netlify.app  
 **Swagger API Docs:** https://url-shortner-pwp7.onrender.com/swagger-ui/index.html
 
+**Promo video (30s):**
+
+![URL Shortener promo video](assets/17-promo.mp4)
+
 ---
 
 ## ✨ Features
@@ -348,8 +352,3 @@ This project helped strengthen:
 **Mritunjay Senapati**
 
 Built as a full-stack backend-focused engineering project.
----
-
-## 🎬 Promo Video
-
-[![Watch the promo video](assets/promo-thumbnail.png)](assets/17-promo.mp4)
