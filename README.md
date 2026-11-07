@@ -9,7 +9,7 @@ A full-stack URL shortening application built with **Spring Boot, PostgreSQL, Do
 
 **Promo video (30s):**
 
-![URL Shortener promo video](assets/17-promo.mp4)
+https://github.com/user-attachments/assets/ad27e50e-a821-41c6-9932-59b604167c20
 
 ---
 
