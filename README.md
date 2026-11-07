@@ -348,3 +348,8 @@ This project helped strengthen:
 **Mritunjay Senapati**
 
 Built as a full-stack backend-focused engineering project.
+---
+
+## 🎬 Promo Video
+
+[![Watch the promo video](assets/promo-thumbnail.png)](assets/17-promo.mp4)
